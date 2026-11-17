@@ -64,6 +64,9 @@ les afficher, et seulement si votre version de chafa les prend en charge.
 
 ## Compilation et lancement
 
+Binaires précompilés (Linux et macOS, amd64/arm64) : voir la page
+[Releases](https://github.com/laurentpoirierfr/imgview/releases).
+
 Installation directe depuis GitHub :
 
 ```sh
@@ -82,6 +85,27 @@ make run ARGS=~/Images  # compile et lance en une étape
 make install            # installe dans ~/.local/bin (PREFIX=… pour changer)
 make help               # liste toutes les cibles
 ```
+
+## Publier une release
+
+Les workflows GitHub Actions sont dans `.github/workflows/` :
+
+- `ci.yml` lance `go vet`, `go test` et une compilation pour chaque
+  plateforme, à chaque push ou pull request sur `main` et `develop` ;
+- `release.yml` lance [GoReleaser](https://goreleaser.com) (configuré par
+  `.goreleaser.yml`) quand un tag `v*` est poussé.
+
+```sh
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+GoReleaser publie alors les archives `imgview_<version>_<os>_<arch>.tar.gz`
+et le fichier `checksums.txt`. Un tag comme `v0.2.0-rc1` est publié en
+pré-version. La version est inscrite dans le binaire : `imgview --version`.
+
+Test en local, si GoReleaser est installé : `make release-check` puis
+`make snapshot`.
 
 ## Raccourcis principaux
 

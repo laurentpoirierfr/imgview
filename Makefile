@@ -4,9 +4,10 @@ BIN_DIR := bin
 PREFIX  ?= $(HOME)/.local
 
 GO      ?= go
-LDFLAGS ?= -s -w
+VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
+LDFLAGS ?= -s -w -X main.Version=$(VERSION)
 
-.PHONY: all build run install uninstall test vet fmt tidy clean help
+.PHONY: all build run install uninstall test vet fmt tidy clean snapshot release-check help
 
 all: build
 
@@ -34,8 +35,14 @@ fmt: ## Formate le code
 tidy: ## Nettoie go.mod / go.sum
 	$(GO) mod tidy
 
-clean: ## Supprime bin/
-	rm -rf $(BIN_DIR)
+clean: ## Supprime bin/ et dist/
+	rm -rf $(BIN_DIR) dist
+
+snapshot: ## Build local de toutes les plateformes avec GoReleaser (dist/)
+	goreleaser release --snapshot --clean
+
+release-check: ## Vérifie .goreleaser.yml
+	goreleaser check
 
 help: ## Affiche cette aide
 	@grep -E '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*## "}{printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'

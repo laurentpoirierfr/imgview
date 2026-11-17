@@ -1,6 +1,8 @@
 // imgview : explorateur d'images dans le terminal, construit avec Bubble Tea v2.
 //
 // Usage : imgview [répertoire]   (par défaut ~/Images)
+//
+//	imgview --version
 package main
 
 import (
@@ -13,9 +15,21 @@ import (
 	"github.com/laurentpoirierfr/imgview/internal/ui"
 )
 
+// Version est renseignée à la compilation (-ldflags "-X main.Version=…").
+var Version = "dev"
+
 func main() {
 	root := defaultRoot()
 	if len(os.Args) > 1 {
+		switch os.Args[1] {
+		case "-v", "--version", "version":
+			fmt.Println("imgview", Version)
+			return
+		case "-h", "--help":
+			fmt.Println("Usage : imgview [répertoire]   (par défaut ~/Images)")
+			fmt.Println("        imgview --version")
+			return
+		}
 		root = os.Args[1]
 	}
 	abs, err := filepath.Abs(root)

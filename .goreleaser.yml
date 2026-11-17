@@ -1,0 +1,55 @@
+version: 2
+
+project_name: imgview
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: imgview
+    main: ./cmd/imgview
+    binary: imgview
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    # Pas de Windows : pkg/kittygfx utilise des ioctl Unix, et le plein
+    # écran / l'ouverture externe reposent sur bash et xdg-open.
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.Version={{ .Version }}
+
+archives:
+  - id: default
+    formats:
+      - tar.gz
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+    files:
+      - README.md
+
+checksum:
+  name_template: "checksums.txt"
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - "^ci:"
+
+release:
+  draft: false
+  prerelease: auto
