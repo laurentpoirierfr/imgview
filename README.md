@@ -6,6 +6,8 @@ Explorateur d'images pour le terminal, écrit en Go avec
 Une arborescence des répertoires à gauche, une grille de miniatures à droite,
 une barre de menus, un aperçu et un affichage plein écran.
 
+![imgview dans Ghostty : arborescence à gauche, miniatures en haute définition (protocole Kitty) à droite](./assets/screenshot.png)
+
 ## Pré-requis
 
 ### Obligatoires
